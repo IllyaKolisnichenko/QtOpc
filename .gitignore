@@ -1,0 +1,13 @@
+QtOpc/Debug/
+QtOpc/Release/
+Debug/
+Release/
+
+.vs/
+.idea/
+*.csv
+.idea/
+*.user
+*.filter
+/QtOpc/QtOpc.vcxproj
+/QtOpc/QtOpc.vcxproj.filters

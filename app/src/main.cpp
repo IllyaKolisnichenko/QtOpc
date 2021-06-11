@@ -1,9 +1,11 @@
 #include <QtCore/QCoreApplication>
-#include "OpcUaClient.h"
+#include <QFileDialog>
+#include "MainWindow.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    OpcUaClient opcUa;
+    MainWindow opcUa;
+
     return a.exec();
 }

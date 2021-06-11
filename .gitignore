@@ -1,9 +1,7 @@
-QtOpc/Debug/
-QtOpc/Release/
-Debug/
-Release/
+# Ignore all folders that contains "build" word except "build-aux"
+*build*/
+!build-aux/
 
 .vs/
 .idea/
 *.csv
-.idea/

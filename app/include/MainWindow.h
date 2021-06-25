@@ -1,5 +1,7 @@
 #pragma once
+
 #include "OpcUaClient.h"
+
 #include <QObject>
 
 class MainWindow : public QObject
@@ -8,9 +10,10 @@ class MainWindow : public QObject
 
 public:
     MainWindow();
-    ~MainWindow();
+
 private:
-    OpcUaClient* opcUa{};
+    std::unique_ptr< OpcUaClient > opcUa_;
+
 private slots:
-    void getTagData(const QString& nodeName, const QVariant& value);
+    void getTagData( const QString& nodeName, const QVariant& value );
 };

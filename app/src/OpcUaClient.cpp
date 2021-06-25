@@ -1,16 +1,22 @@
 #include "OpcUaClient.h"
 
-#include "QCoreApplication"
+#include <QCoreApplication>
 
 void OpcUaClient::connectToOpc()
 {
     QOpcUaProvider provider{};
     if ( provider.availableBackends().isEmpty() )
+    {
+        qDebug() << __FILE__ << ":" << __LINE__ << " " << __FUNCTION__ " " << "backends is empty";
         return;
+    }
 
     client_ = provider.createClient( provider.availableBackends().first() );
     if ( !client_ )
+    {
+        qDebug() << __FILE__ << ":" << __LINE__ << " " << __FUNCTION__ " " << "can't create client";
         return;
+    }
 
     // Connect to the stateChanged signal. Compatible slots of QObjects can be used instead of a lambda.
     connect( client_, &QOpcUaClient::stateChanged, this, &OpcUaClient::clientStateHandler );
@@ -22,23 +28,20 @@ void OpcUaClient::connectToOpc()
 
 void OpcUaClient::connectError(QOpcUaErrorState* errorState) 
 {
-    qDebug() << errorState->errorCode();
-    qDebug() << static_cast< int >( errorState->connectionStep() );
+    qDebug() << __FILE__ << ":" << __LINE__ << " " << __FUNCTION__ " " << " connectError";
+    qDebug() << "Error code - "<< errorState->errorCode();
+    qDebug() << "Connection step - " << static_cast< int >( errorState->connectionStep() );
 }
 
 void OpcUaClient::requestEndpointsFinished( const QVector<QOpcUaEndpointDescription>& endpoints )
 {
     if ( endpoints.isEmpty() )
     {
-        qDebug() << "The server did not return any endpoints";
+        qDebug() << __FILE__ << ":" << __LINE__ << " " << __FUNCTION__ " " << " The server did not return any endpoints";
         clientStateHandler( QOpcUaClient::ClientState::Disconnected );
         return;
     }
-    client_->connectToEndpoint( endpoints.first() );
-    client_->endpoint().setSecurityPolicy("None");
-    qDebug() << client_->endpoint().securityMode();
-    qDebug() << client_->endpoint().endpointUrl();
-    qDebug() << client_->endpoint().securityPolicy();
+    client_->connectToEndpoint( endpoints.first() ); // First - Security policy is none 
 }
 
 void OpcUaClient::setUrl( const QString& opcUrl )
@@ -48,8 +51,8 @@ void OpcUaClient::setUrl( const QString& opcUrl )
 
 void OpcUaClient::nodeUpdated( QOpcUa::NodeAttribute attr, const QVariant& value )
 {
-    Q_UNUSED(attr);
-    emit tagData_signal(nodes_.key(static_cast<QOpcUaNode*>(sender())), value );
+    Q_UNUSED( attr )
+    emit tagData_signal( "", value );
 }
 
 bool OpcUaClient::addTag( const QString& nodeName, const QString& tagName )
